@@ -12,6 +12,7 @@ int main(int argc, char const *argv[])
     char wwwpath[256], buffer[1024];
     char reply[] = "Hello man";
     struct sockaddr_in address;
+    int addrlen = sizeof(address);
 
     if (argc > 2)
     {
@@ -35,10 +36,10 @@ int main(int argc, char const *argv[])
     while (1)
     {
         new_socket_fd = accept(socket_fd, (struct sockaddr *)&address,
-                               (socklen_t *)&address);
+                               (socklen_t *)&addrlen);
 
         read(new_socket_fd, buffer, sizeof(buffer));
-        printf("Data received: %s\n", buffer);
+        printf("Data received:\n%s\n", buffer);
         send(new_socket_fd, buffer, strlen(buffer), 0);
         close(new_socket_fd);
     }
