@@ -10,7 +10,6 @@ int main(int argc, char const *argv[])
     int port, socket_fd, new_socket_fd, valread;
     int opt = 1;
     char wwwpath[256], buffer[1024];
-    char reply[] = "Hello man";
     struct sockaddr_in address;
     int addrlen = sizeof(address);
 
