@@ -7,7 +7,7 @@
 
 int main(int argc, char const *argv[])
 {
-    int port, socket_fd, new_socket_fd, valread;
+    int port, socket_fd, new_socket_fd;
     int opt = 1;
     char wwwpath[256], buffer[1024];
     struct sockaddr_in address;
@@ -38,8 +38,33 @@ int main(int argc, char const *argv[])
                                (socklen_t *)&addrlen);
 
         read(new_socket_fd, buffer, sizeof(buffer));
-        printf("Data received:\n%s\n", buffer);
-        send(new_socket_fd, buffer, strlen(buffer), 0);
+        char req_type[256];
+        char req_path[256];
+        sscanf(buffer, "%s %s", req_type, req_path);
+        printf("Type: %s\nPath: %s\n", req_type, req_path);
+        char full_path[256];
+        strcpy(full_path, wwwpath);
+        strcat(full_path, req_path);
+        printf("%s\n", full_path);
+
+        FILE *fp;
+        if (access(full_path, F_OK) == 0)
+        {
+            fp = fopen(full_path, "r");
+            fseek(fp, 0, SEEK_END);
+            size_t file_size = ftell(fp);
+            rewind(fp);
+            char file_buf[file_size];
+            memset(file_buf, 0, sizeof(file_buf));
+            fread(file_buf, sizeof(file_buf), 1, fp);
+            fclose(fp);
+            int sent_bytes = send(new_socket_fd, file_buf, sizeof(file_buf), 0);
+        }
+        else
+        {
+            char error_msg[] = "Error 404: File not found\n";
+            send(new_socket_fd, error_msg, sizeof(error_msg), 0);
+        }
         close(new_socket_fd);
     }
     return 0;
