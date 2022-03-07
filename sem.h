@@ -29,7 +29,7 @@ typedef struct SEM SEM;
  * handle for the created semaphore, or NULL if an error occured.
  */
 
-SEM *sem_init(int initVal);
+SEM *sem_init(int init_val);
 
 /* Destroys a semaphore and frees all associated resources.
  *
