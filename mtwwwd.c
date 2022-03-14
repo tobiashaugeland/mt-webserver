@@ -15,7 +15,7 @@ int main(int argc, char const *argv[])
     int port = DEFAULT_PORT;
     char wwwpath[256] = DEFAULT_ROOT_PATH;
     char buffer[1024];
-    struct sockaddr_in address;
+    struct sockaddr_in6 address;
     int addrlen = sizeof(address);
 
     if (argc > 2)
@@ -24,15 +24,20 @@ int main(int argc, char const *argv[])
         port = atoi(argv[2]);
     }
     printf("Path: %s\nPort: %d\n", wwwpath, port);
-    
-    address.sin_family = AF_INET;
-    address.sin_port = htons(port);
-    address.sin_addr.s_addr = INADDR_ANY;
 
-    socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+    address.sin6_family = AF_INET6;
+    address.sin6_port = htons(port);
+    address.sin6_addr = in6addr_any;
+
+    // Allows both ipv4 and ipv6 connections
+    // To test with ipv4: curl --http0.9 127.0.0.1:8000/index.html
+    // To test with ipv6: curl --http0.9 -g -6 "[::1]:8000/index.html"
+    socket_fd = socket(AF_INET6, SOCK_STREAM, 0);
+
     // Set options to force socket to bind, even if address or port is already in use
-    setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
+    setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 
+    
     bind(socket_fd, (struct sockaddr *)&address, sizeof(address));
 
     listen(socket_fd, 1);
