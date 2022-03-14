@@ -5,11 +5,16 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#define DEFAULT_PORT 8000
+#define DEFAULT_ROOT_PATH "webroot"
+
 int main(int argc, char const *argv[])
 {
-    int port, socket_fd, new_socket_fd;
+    int socket_fd, new_socket_fd;
     int opt = 1;
-    char wwwpath[256], buffer[1024];
+    int port = DEFAULT_PORT;
+    char wwwpath[256] = DEFAULT_ROOT_PATH;
+    char buffer[1024];
     struct sockaddr_in address;
     int addrlen = sizeof(address);
 
@@ -17,9 +22,9 @@ int main(int argc, char const *argv[])
     {
         strcpy(wwwpath, argv[1]);
         port = atoi(argv[2]);
-
-        printf("Path: %s\nPort: %d\n", wwwpath, port);
     }
+    printf("Path: %s\nPort: %d\n", wwwpath, port);
+    
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
     address.sin_addr.s_addr = INADDR_ANY;
