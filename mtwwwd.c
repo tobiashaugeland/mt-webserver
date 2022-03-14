@@ -32,6 +32,8 @@ int main(int argc, char const *argv[])
 
     listen(socket_fd, 1);
 
+    printf("Ready to accept connections...\n");
+
     while (1)
     {
         new_socket_fd = accept(socket_fd, (struct sockaddr *)&address,
