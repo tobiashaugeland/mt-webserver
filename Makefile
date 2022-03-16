@@ -1,4 +1,4 @@
-TARGET_EXEC := webserver
+TARGET_EXEC := mtwwwd
 
 CC = gcc
 
