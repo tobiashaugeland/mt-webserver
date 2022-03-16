@@ -84,18 +84,16 @@ int main(int argc, char const *argv[])
 
     listen(socket_fd, 1);
 
-
     BNDBUF *bb = bb_init(4);
-    pthread_t *thread1;
-    pthread_t *thread2;
-    for (int i; i < 4; i++){
+    pthread_t threads[4];
+    for (int i = 0; i < 4; i++)
+    {
+        pthread_create(&threads[i], NULL, &handle_request, bb);
     }
-    pthread_create(&thread1, NULL, &handle_request, bb);
-    pthread_create(&thread2, NULL, &handle_request, bb);
 
     printf("Ready to accept connections...\n");
     while (1)
-    {   
+    {
         printf("Start of main\n");
         new_socket_fd = accept(socket_fd, (struct sockaddr *)&address,
                                (socklen_t *)&addrlen);
