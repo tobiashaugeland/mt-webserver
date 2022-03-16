@@ -29,10 +29,10 @@ void bb_del(BNDBUF *bb){
 
 int bb_get(BNDBUF *bb){
     int item;
-    P(bb->empty);
+    P(bb->full);
     item = bb->buffer[bb->remove];
     bb->remove = (bb->remove + 1) % bb->size;
-    V(bb->full);
+    V(bb->empty);
     return item;
 }
 
@@ -41,8 +41,8 @@ void bb_add(BNDBUF *bb, int fd){
         //Block until there is space, does this work?
         P(bb->full);
     }
-    P(bb->full);
+    P(bb->empty);
     bb->buffer[bb->insert] = fd;
     bb->insert = (bb->insert + 1) % bb->size;
-    V(bb->empty);
+    V(bb->full);
 }
