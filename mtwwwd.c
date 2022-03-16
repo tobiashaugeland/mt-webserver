@@ -38,7 +38,6 @@ int main(int argc, char const *argv[])
     // Set options to force socket to bind, even if address or port is already in use
     setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 
-
     bind(socket_fd, (struct sockaddr *)&address, sizeof(address));
 
     listen(socket_fd, 1);
