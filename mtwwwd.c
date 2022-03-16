@@ -80,6 +80,10 @@ void *handle_request(void *bb)
         close(fd);
     }
 }
+
+/***************************************************
+ *                    MAIN                         *
+ * *************************************************/
 int main(int argc, char const *argv[])
 {
     int socket_fd, new_socket_fd;
