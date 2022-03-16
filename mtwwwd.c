@@ -19,7 +19,7 @@ char wwwpath[256] = DEFAULT_ROOT_PATH;
 
 int good_request(char path[])
 {
-    if(strstr(path,"..") != NULL)
+    if (strstr(path, "..") != NULL)
     {
         return 0;
     }
@@ -30,13 +30,15 @@ int good_request(char path[])
     realpath(path, resolved_path);
     strcat(wd, "/");
     strcat(wd, wwwpath);
-    if (strstr(resolved_path, wd) == NULL){
+    if (strstr(resolved_path, wd) == NULL)
+    {
         return 0;
     }
     return 1;
 }
 
-int is_regular_file(char path[]){
+int is_regular_file(char path[])
+{
     struct stat path_stat;
     stat(path, &path_stat);
     return S_ISREG(path_stat.st_mode);
@@ -55,7 +57,6 @@ void *handle_request(void *bb)
         char full_path[256];
         strcpy(full_path, wwwpath);
         strcat(full_path, req_path);
- 
 
         FILE *fp;
         if ((access(full_path, F_OK) == 0) && good_request(full_path) == 1 && is_regular_file(full_path))
@@ -90,15 +91,14 @@ int main(int argc, char const *argv[])
     struct sockaddr_in6 address;
     int addrlen = sizeof(address);
 
-    if (argc == 5 )
+    if (argc == 5)
     {
         strcpy(wwwpath, argv[1]);
         port = atoi(argv[2]);
         thread_count = atoi(argv[3]);
         buffer_size = atoi(argv[4]);
     }
-    printf("Path: %s\nPort: %d\nThread count: %d\nBuffer slots: %d\n"
-                        , wwwpath, port, thread_count, buffer_size);
+    printf("Path: %s\nPort: %d\nThread count: %d\nBuffer slots: %d\n", wwwpath, port, thread_count, buffer_size);
 
     address.sin6_family = AF_INET6;
     address.sin6_port = htons(port);
