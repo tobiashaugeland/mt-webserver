@@ -10,8 +10,8 @@ struct BNDBUF
     int remove;
     SEM *full;
     SEM *empty;
-    SEM *remove_lock;
-    SEM *insert_lock;
+    pthread_mutex_t read_mutex;
+    pthread_mutex_t write_mutex;
     int size;
     int buffer[];
 };
@@ -23,8 +23,8 @@ BNDBUF *bb_init(unsigned int size)
     bbuffer->remove = 0;
     bbuffer->full = sem_init(0);
     bbuffer->empty = sem_init(size);
-    bbuffer->remove_lock = sem_init(1);
-    bbuffer->insert_lock = sem_init(1);
+    pthread_mutex_init(&bbuffer->read_mutex, NULL);
+    pthread_mutex_init(&bbuffer->write_mutex, NULL);
     bbuffer->size = size;
     return bbuffer;
 }
@@ -42,14 +42,14 @@ int bb_get(BNDBUF *bb)
 
     // Locking for crital section
     P(bb->full);
-    P(bb->remove_lock);
+    pthread_mutex_lock(&bb->read_mutex);
 
     item = bb->buffer[bb->remove];
     bb->remove = (bb->remove + 1) % bb->size;
 
     // Unlocking crital section
-    V(bb->remove_lock);
-    V(bb->empty);
+    pthread_mutex_unlock(&bb->write_mutex);
+     V(bb->empty);
 
     return item;
 }
@@ -58,12 +58,12 @@ void bb_add(BNDBUF *bb, int fd)
 {
     // Locking for crital section
     P(bb->empty);
-    P(bb->insert_lock);
+    pthread_mutex_lock(&bb->write_mutex);
 
     bb->buffer[bb->insert] = fd;
     bb->insert = (bb->insert + 1) % bb->size;
 
     // Unlocking crital section
-    V(bb->insert_lock);
+    pthread_mutex_unlock(&bb->read_mutex);
     V(bb->full);
 }
