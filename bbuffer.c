@@ -16,7 +16,7 @@ BNDBUF *bb_init(unsigned int size)
 {
     BNDBUF *bbuffer = malloc(sizeof(*bbuffer) + size * sizeof(int));
     bbuffer->insert = 0;
-    bbuffer->remove = size - 1;
+    bbuffer->remove = 0;
     bbuffer->full = sem_init(0);
     bbuffer->empty = sem_init(size);
     bbuffer->size = size;
