@@ -14,6 +14,15 @@
 
 char wwwpath[256] = DEFAULT_ROOT_PATH;
 
+int good_request(char path[])
+{
+    if(strstr(path,"..") != NULL)
+    {
+        return 0;
+    }
+    return 1;
+}
+
 void *handle_request(void *bb)
 {
     while (1)
@@ -27,9 +36,12 @@ void *handle_request(void *bb)
         char full_path[256];
         strcpy(full_path, wwwpath);
         strcat(full_path, req_path);
-
+        // if(good_request(req_path)==0)
+        // {
+        //     continue;
+        // }
         FILE *fp;
-        if (access(full_path, F_OK) == 0)
+        if ((access(full_path, F_OK) == 0) && good_request(req_path) == 1)
         {
             fp = fopen(full_path, "r");
             fseek(fp, 0, SEEK_END);
@@ -50,7 +62,6 @@ void *handle_request(void *bb)
         close(fd);
     }
 }
-
 int main(int argc, char const *argv[])
 {
     int socket_fd, new_socket_fd;
