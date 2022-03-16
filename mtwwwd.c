@@ -5,6 +5,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <pthread.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include "bbuffer.h"
 
 #define DEFAULT_PORT 8000
@@ -33,6 +36,12 @@ int good_request(char path[])
     return 1;
 }
 
+int is_regular_file(char path[]){
+    struct stat path_stat;
+    stat(path, &path_stat);
+    return S_ISREG(path_stat.st_mode);
+}
+
 void *handle_request(void *bb)
 {
     while (1)
@@ -49,7 +58,7 @@ void *handle_request(void *bb)
  
 
         FILE *fp;
-        if ((access(full_path, F_OK) == 0) && good_request(full_path) == 1)
+        if ((access(full_path, F_OK) == 0) && good_request(full_path) == 1 && is_regular_file(full_path))
         {
             fp = fopen(full_path, "r");
             fseek(fp, 0, SEEK_END);
