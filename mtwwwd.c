@@ -9,6 +9,8 @@
 
 #define DEFAULT_PORT 8000
 #define DEFAULT_ROOT_PATH "webroot"
+#define DEFAULT_THREAD_COUNT 4
+#define DEFAULT_BUFFER_SIZE 10
 
 char wwwpath[256] = DEFAULT_ROOT_PATH;
 
@@ -16,15 +18,12 @@ void *handle_request(void *bb)
 {
     while (1)
     {
-        // sleep(1);
         int fd = bb_get(bb);
         char buffer[1024];
         read(fd, buffer, sizeof(buffer));
         char req_type[256];
         char req_path[256];
-        int *seq;
-        sscanf(buffer, "%s %s %d", req_type, req_path, seq);
-        // printf("Type: %s Path: %s Seq:%d\n", req_type, req_path, seq);
+        sscanf(buffer, "%s %s", req_type, req_path);
         char full_path[256];
         strcpy(full_path, wwwpath);
         strcat(full_path, req_path);
@@ -57,16 +56,21 @@ int main(int argc, char const *argv[])
     int socket_fd, new_socket_fd;
     int opt = 1;
     int port = DEFAULT_PORT;
+    int thread_count = DEFAULT_THREAD_COUNT;
+    int buffer_size = DEFAULT_BUFFER_SIZE;
     char buffer[1024];
     struct sockaddr_in6 address;
     int addrlen = sizeof(address);
 
-    if (argc > 2)
+    if (argc == 5 )
     {
         strcpy(wwwpath, argv[1]);
         port = atoi(argv[2]);
+        thread_count = atoi(argv[3]);
+        buffer_size = atoi(argv[4]);
     }
-    printf("Path: %s\nPort: %d\n", wwwpath, port);
+    printf("Path: %s\nPort: %d\nThread count: %d\nBuffer slots: %d\n"
+                        , wwwpath, port, thread_count, buffer_size);
 
     address.sin6_family = AF_INET6;
     address.sin6_port = htons(port);
@@ -84,9 +88,9 @@ int main(int argc, char const *argv[])
 
     listen(socket_fd, 1);
 
-    BNDBUF *bb = bb_init(4);
-    pthread_t threads[4];
-    for (int i = 0; i < 4; i++)
+    BNDBUF *bb = bb_init(buffer_size);
+    pthread_t threads[thread_count];
+    for (int i = 0; i < thread_count; i++)
     {
         pthread_create(&threads[i], NULL, &handle_request, bb);
     }
