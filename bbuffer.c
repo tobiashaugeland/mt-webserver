@@ -49,7 +49,7 @@ int bb_get(BNDBUF *bb)
 
     // Unlocking crital section
     pthread_mutex_unlock(&bb->write_mutex);
-     V(bb->empty);
+    V(bb->empty);
 
     return item;
 }
