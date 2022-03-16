@@ -46,6 +46,7 @@ int main(int argc, char const *argv[])
     printf("Ready to accept connections...\n");
 
     BNDBUF *bb = bb_init(4);
+    int local_free = 0;
     while (1)
     {
         new_socket_fd = accept(socket_fd, (struct sockaddr *)&address,
@@ -81,6 +82,14 @@ int main(int argc, char const *argv[])
             send(new_socket_fd, error_msg, sizeof(error_msg), 0);
         }
         close(new_socket_fd);
+        local_free++;
+        if (local_free == 4)
+        {
+            printf("sleeping....\n");
+            sleep(5);
+            bb_get(bb);
+            local_free = 0;
+        }
     }
     return 0;
 }
