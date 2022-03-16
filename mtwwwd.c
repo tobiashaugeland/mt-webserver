@@ -12,10 +12,11 @@
 
 char wwwpath[256] = DEFAULT_ROOT_PATH;
 
-void *handle_request(BNDBUF *bb)
+void *handle_request(void *bb)
 {
     while (1)
     {
+        printf("calling thread\n");
         int fd = bb_get(bb);
         char buffer[1024];
         read(fd, buffer, sizeof(buffer));
@@ -85,13 +86,17 @@ int main(int argc, char const *argv[])
 
 
     BNDBUF *bb = bb_init(4);
-    pthread_t *threads[4];
+    pthread_t *thread1;
+    pthread_t *thread2;
     for (int i; i < 4; i++){
-        pthread_create(threads[i], NULL, &handle_request, bb);
     }
+    pthread_create(&thread1, NULL, &handle_request, bb);
+    pthread_create(&thread2, NULL, &handle_request, bb);
+
     printf("Ready to accept connections...\n");
     while (1)
-    {
+    {   
+        printf("Start of main\n");
         new_socket_fd = accept(socket_fd, (struct sockaddr *)&address,
                                (socklen_t *)&addrlen);
         bb_add(bb, new_socket_fd);
