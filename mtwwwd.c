@@ -17,6 +17,13 @@
 
 char wwwpath[256] = DEFAULT_ROOT_PATH;
 
+/**
+ * @brief Checks if the given path is a directory that is specified in the
+ * wwwpath variable.
+ *
+ * @param path The path to check.
+ * @return 1 if the path is a directory in the wwwpath, 0 otherwise.
+*/
 int good_request(char path[])
 {
     if (strstr(path, "..") != NULL)
@@ -36,7 +43,12 @@ int good_request(char path[])
     }
     return 1;
 }
-
+/**
+ * @brief Checks if the given path is a file, not a directory.
+ *
+ * @param path The path to check.
+ * @return int 1 if the path is a file, 0 otherwise.
+ */
 int is_regular_file(char path[])
 {
     struct stat path_stat;
@@ -44,6 +56,12 @@ int is_regular_file(char path[])
     return S_ISREG(path_stat.st_mode);
 }
 
+
+/**
+ * @brief consumer thread handler
+ *
+ * @param bb ring buffer
+ */
 void *handle_request(void *bb)
 {
     while (1)
@@ -80,6 +98,7 @@ void *handle_request(void *bb)
         close(fd);
     }
 }
+
 
 /***************************************************
  *                    MAIN                         *
