@@ -43,6 +43,8 @@ int good_request(char path[])
     }
     return 1;
 }
+
+
 /**
  * @brief Checks if the given path is a file, not a directory.
  *
