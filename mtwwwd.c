@@ -16,18 +16,18 @@ void *handle_request(void *bb)
 {
     while (1)
     {
-        printf("calling thread\n");
+        sleep(1);
         int fd = bb_get(bb);
         char buffer[1024];
         read(fd, buffer, sizeof(buffer));
         char req_type[256];
         char req_path[256];
-        sscanf(buffer, "%s %s", req_type, req_path);
-        printf("Type: %s\nPath: %s\n", req_type, req_path);
+        int seq;
+        sscanf(buffer, "%s %s %d", req_type, req_path, seq);
+        printf("Type: %s Path: %s Seq:%d\n", req_type, req_path, seq);
         char full_path[256];
         strcpy(full_path, wwwpath);
         strcat(full_path, req_path);
-        printf("%s\n", full_path);
 
         FILE *fp;
         if (access(full_path, F_OK) == 0)
@@ -84,7 +84,7 @@ int main(int argc, char const *argv[])
 
     listen(socket_fd, 1);
 
-    BNDBUF *bb = bb_init(4);
+    BNDBUF *bb = bb_init(100);
     pthread_t threads[4];
     for (int i = 0; i < 4; i++)
     {
@@ -94,7 +94,6 @@ int main(int argc, char const *argv[])
     printf("Ready to accept connections...\n");
     while (1)
     {
-        printf("Start of main\n");
         new_socket_fd = accept(socket_fd, (struct sockaddr *)&address,
                                (socklen_t *)&addrlen);
         bb_add(bb, new_socket_fd);

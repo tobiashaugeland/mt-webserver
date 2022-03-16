@@ -1,12 +1,17 @@
-from requests_futures.sessions import FuturesSession
-import requests
-URL = "http://127.0.0.1:8000/index.html"
-PORT = 8000
+import socket
+from threading import Thread
 
-session = FuturesSession()
-# req = requests.get(URL)
-# print(req)
+HOST = "127.0.0.1"
+PORT = 8000
+request = "GET /index.html"
+
+def req(tid):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+        s.sendall(request.encode())
+        response = s.recv(1024)
+        print(tid)
+
 
 for i in range(10):
-    r = session.get(URL)
-    print(i)
+    Thread(target=req, args=[i]).start()
