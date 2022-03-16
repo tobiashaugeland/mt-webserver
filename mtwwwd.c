@@ -16,7 +16,7 @@ void *handle_request(void *bb)
 {
     while (1)
     {
-        sleep(1);
+        // sleep(1);
         int fd = bb_get(bb);
         char buffer[1024];
         read(fd, buffer, sizeof(buffer));

@@ -22,6 +22,7 @@ BNDBUF *bb_init(unsigned int size)
     bbuffer->full = sem_init(0);
     bbuffer->empty = sem_init(size);
     bbuffer->size = size;
+    return bbuffer;
 }
 
 void bb_del(BNDBUF *bb)
@@ -38,7 +39,7 @@ int bb_get(BNDBUF *bb)
     printf("starting P in thread %ld\n", tid);
     P(bb->full);
     item = bb->buffer[bb->remove];
-    printf("got %d\n", item);
+    printf("got %d at %d\n", item, bb->remove);
     bb->remove = (bb->remove + 1) % bb->size;
     V(bb->empty);
     return item;
