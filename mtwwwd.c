@@ -22,9 +22,9 @@ void *handle_request(void *bb)
         read(fd, buffer, sizeof(buffer));
         char req_type[256];
         char req_path[256];
-        int seq;
+        int *seq;
         sscanf(buffer, "%s %s %d", req_type, req_path, seq);
-        printf("Type: %s Path: %s Seq:%d\n", req_type, req_path, seq);
+        // printf("Type: %s Path: %s Seq:%d\n", req_type, req_path, seq);
         char full_path[256];
         strcpy(full_path, wwwpath);
         strcat(full_path, req_path);
@@ -84,7 +84,7 @@ int main(int argc, char const *argv[])
 
     listen(socket_fd, 1);
 
-    BNDBUF *bb = bb_init(100);
+    BNDBUF *bb = bb_init(4);
     pthread_t threads[4];
     for (int i = 0; i < 4; i++)
     {

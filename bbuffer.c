@@ -10,6 +10,8 @@ struct BNDBUF
     int remove;
     SEM *full;
     SEM *empty;
+    SEM *remove_lock;
+    SEM *insert_lock;
     int size;
     int buffer[];
 };
@@ -21,6 +23,8 @@ BNDBUF *bb_init(unsigned int size)
     bbuffer->remove = 0;
     bbuffer->full = sem_init(0);
     bbuffer->empty = sem_init(size);
+    bbuffer->remove_lock = sem_init(1);
+    bbuffer->insert_lock = sem_init(1);
     bbuffer->size = size;
     return bbuffer;
 }
@@ -36,11 +40,13 @@ int bb_get(BNDBUF *bb)
 {
     int item;
     pthread_t tid = pthread_self();
-    printf("starting P in thread %ld\n", tid);
+    // printf("starting P in thread %ld\n", tid);
     P(bb->full);
+    P(bb->remove_lock);
     item = bb->buffer[bb->remove];
     printf("got %d at %d\n", item, bb->remove);
     bb->remove = (bb->remove + 1) % bb->size;
+    V(bb->remove_lock);
     V(bb->empty);
     return item;
 }
@@ -48,8 +54,10 @@ int bb_get(BNDBUF *bb)
 void bb_add(BNDBUF *bb, int fd)
 {
     P(bb->empty);
+    P(bb->insert_lock);
     bb->buffer[bb->insert] = fd;
     printf("added %d at %d\n", fd, (bb->insert));
     bb->insert = (bb->insert + 1) % bb->size;
+    V(bb->insert_lock);
     V(bb->full);
 }

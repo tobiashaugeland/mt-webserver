@@ -29,7 +29,7 @@ int sem_del(SEM *sem)
 void P(SEM *sem)
 {
     pthread_mutex_lock(&sem->mutex);
-    if (sem->count <= 0)
+    while (sem->count <= 0)
     {
         pthread_cond_wait(&sem->cond, &sem->mutex);
     }
@@ -41,6 +41,6 @@ void V(SEM *sem)
 {
     pthread_mutex_lock(&sem->mutex);
     (sem->count)++;
+    pthread_cond_broadcast(&sem->cond);
     pthread_mutex_unlock(&sem->mutex);
-    pthread_cond_signal(&sem->cond);
 }

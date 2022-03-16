@@ -13,5 +13,5 @@ def req(tid):
         print(tid)
 
 
-for i in range(10000):
+for i in range(1000):
     Thread(target=req, args=[i]).start()
