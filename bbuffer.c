@@ -39,25 +39,31 @@ void bb_del(BNDBUF *bb)
 int bb_get(BNDBUF *bb)
 {
     int item;
-    pthread_t tid = pthread_self();
-    // printf("starting P in thread %ld\n", tid);
+
+    // Locking for crital section
     P(bb->full);
     P(bb->remove_lock);
+
     item = bb->buffer[bb->remove];
-    printf("got %d at %d\n", item, bb->remove);
     bb->remove = (bb->remove + 1) % bb->size;
+
+    // Unlocking crital section
     V(bb->remove_lock);
     V(bb->empty);
+
     return item;
 }
 
 void bb_add(BNDBUF *bb, int fd)
 {
+    // Locking for crital section
     P(bb->empty);
     P(bb->insert_lock);
+
     bb->buffer[bb->insert] = fd;
-    printf("added %d at %d\n", fd, (bb->insert));
     bb->insert = (bb->insert + 1) % bb->size;
+
+    // Unlocking crital section
     V(bb->insert_lock);
     V(bb->full);
 }
