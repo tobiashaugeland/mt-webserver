@@ -38,7 +38,8 @@ int bb_get(BNDBUF *bb){
 
 void bb_add(BNDBUF *bb, int fd){
     if (bb->insert == bb->remove){
-        return;
+        //Block until there is space, does this work?
+        P(bb->full);
     }
     P(bb->full);
     bb->buffer[bb->insert] = fd;
