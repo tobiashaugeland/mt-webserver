@@ -95,7 +95,7 @@ void *handle_request(void *bb)
         else
         {
             char error_msg[] = "Error 404: File not found\n";
-            send(fd, error_msg, sizeof(error_msg), 0);
+            send(fd, error_msg, strlen(error_msg), 0);
         }
         close(fd);
     }
@@ -116,12 +116,19 @@ int main(int argc, char const *argv[])
     struct sockaddr_in6 address;
     int addrlen = sizeof(address);
 
+
+    // Argument parsing, if 4 arguments are not given it will use defaults
     if (argc == 5)
     {
         strcpy(wwwpath, argv[1]);
         port = atoi(argv[2]);
         thread_count = atoi(argv[3]);
         buffer_size = atoi(argv[4]);
+    }
+    else
+    {
+        printf("Correct arguments were not given, using defaults\n"
+            "Correct usage is: mtwwwd <www-path> <port> <threads> <bufferslots>\n");
     }
     printf("Path: %s\nPort: %d\nThread count: %d\nBuffer slots: %d\n", wwwpath, port, thread_count, buffer_size);
 
@@ -132,12 +139,21 @@ int main(int argc, char const *argv[])
     // Allows both ipv4 and ipv6 connections
     // To test with ipv4: curl --http0.9 127.0.0.1:8000/index.html
     // To test with ipv6: curl --http0.9 -g -6 "[::1]:8000/index.html"
-    socket_fd = socket(AF_INET6, SOCK_STREAM, 0);
+    if ((socket_fd = socket(AF_INET6, SOCK_STREAM, 0)) < 0)
+    {
+        perror("Failed to create socket");
+    }
 
     // Set options to force socket to bind, even if address or port is already in use
-    setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
+    {
+        perror("Failed to set socket options");
+    }
 
-    bind(socket_fd, (struct sockaddr *)&address, sizeof(address));
+    if (bind(socket_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+    {
+        perror("Failed to bind socket");
+    }
 
     listen(socket_fd, 1);
 
