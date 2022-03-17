@@ -13,12 +13,15 @@ number_of_requests = parser.parse_args().threads
 threads = []
 
 
-def req(tid):
+def req(id):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
         s.sendall(request.encode())
         response = s.recv(1024)
-        print(tid)
+
+        # Uncomment print statement to see the the current thread number
+        # This will help to see which response is being received
+        # print(id)
 
 
 start = time.time()
