@@ -79,7 +79,7 @@ void *handle_request(void *bb)
         strcat(full_path, req_path);
 
         FILE *fp;
-        if ((access(full_path, F_OK) == 0) && good_request(full_path) == 1 && is_regular_file(full_path))
+        if ((access(full_path, F_OK) == 0) && good_request(full_path) && is_regular_file(full_path))
         {
             fp = fopen(full_path, "r");
             fseek(fp, 0, SEEK_END);
