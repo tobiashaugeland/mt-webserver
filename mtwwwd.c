@@ -75,7 +75,6 @@ void *handle_request(void *bb)
         char full_path[256];
         strcpy(full_path, wwwpath);
         strcat(full_path, req_path);
-        printf("%s\n", full_path);
 
         FILE *fp;
         if ((access(full_path, F_OK) == 0) && good_request(full_path)  && is_regular_file(full_path))
