@@ -103,8 +103,8 @@ void *handle_request(void *bb)
 
 
 /***************************************************
- *                    MAIN                         *
- * *************************************************/
+ *                      MAIN                       *
+ **************************************************/
 int main(int argc, char const *argv[])
 {
     int socket_fd, new_socket_fd;
@@ -142,6 +142,7 @@ int main(int argc, char const *argv[])
     listen(socket_fd, 1);
 
     BNDBUF *bb = bb_init(buffer_size);
+
     pthread_t threads[thread_count];
     for (int i = 0; i < thread_count; i++)
     {

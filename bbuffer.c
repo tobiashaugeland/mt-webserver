@@ -48,7 +48,7 @@ int bb_get(BNDBUF *bb)
     bb->remove = (bb->remove + 1) % bb->size;
 
     // Unlocking crital section
-    pthread_mutex_unlock(&bb->write_mutex);
+    pthread_mutex_unlock(&bb->read_mutex);
     V(bb->empty);
 
     return item;
@@ -64,6 +64,6 @@ void bb_add(BNDBUF *bb, int fd)
     bb->insert = (bb->insert + 1) % bb->size;
 
     // Unlocking crital section
-    pthread_mutex_unlock(&bb->read_mutex);
+    pthread_mutex_unlock(&bb->write_mutex);
     V(bb->full);
 }
