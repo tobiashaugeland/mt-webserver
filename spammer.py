@@ -9,9 +9,12 @@ request = "GET /index.html"
 parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--requests", type=int, default=100)
 parser.add_argument("-p", "--port", type=int, default=8000)
+parser.add_argument("-v", "--verbose", action="store_true")
 
-PORT = parser.parse_args().ports
-number_of_requests = parser.parse_args().requests
+args = parser.parse_args()
+PORT = args.port
+verbose = args.verbose
+number_of_requests = args.requests
 threads = []
 
 
@@ -21,9 +24,8 @@ def req(id):
         s.sendall(request.encode())
         response = s.recv(1024)
 
-        # Uncomment print statement to see the the current thread number
-        # This will help to see which response is being received
-        # print(id)
+        if verbose:
+            print(id)
 
 
 start = time.time()
