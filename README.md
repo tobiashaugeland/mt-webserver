@@ -41,7 +41,7 @@ curl --http0.9 -g 6 "[::1]:8000/index.html"
 
 ### Automatic testing
 
-If you run the spammer.py script it will spam the server with 1000 requests.
+If you run the spammer.py script it will spam the server with default 100 requests.
 
 You can also specify your own amount of requests to spam with:
 
