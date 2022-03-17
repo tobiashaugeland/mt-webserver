@@ -31,13 +31,11 @@ int good_request(char path[])
         return 0;
     }
 
-    char wd[256];
+    char working_dir[256];
     char resolved_path[256];
-    getcwd(wd, sizeof(wd));
     realpath(path, resolved_path);
-    strcat(wd, "/");
-    strcat(wd, wwwpath);
-    if (strstr(resolved_path, wd) == NULL)
+    realpath(wwwpath, working_dir);
+    if (strstr(resolved_path, working_dir) == NULL)
     {
         return 0;
     }
@@ -77,9 +75,10 @@ void *handle_request(void *bb)
         char full_path[256];
         strcpy(full_path, wwwpath);
         strcat(full_path, req_path);
+        printf("%s\n", full_path);
 
         FILE *fp;
-        if ((access(full_path, F_OK) == 0) && good_request(full_path) && is_regular_file(full_path))
+        if ((access(full_path, F_OK) == 0) && good_request(full_path)  && is_regular_file(full_path))
         {
             fp = fopen(full_path, "r");
             fseek(fp, 0, SEEK_END);
