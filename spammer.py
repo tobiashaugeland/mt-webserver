@@ -8,8 +8,10 @@ HOST = "127.0.0.1"
 PORT = 8000
 request = "GET /index.html"
 parser = argparse.ArgumentParser()
-parser.add_argument("-t", "--threads", type=int, default=1000)
+parser.add_argument("-t", "--threads", type=int, default=100)
 number_of_requests = parser.parse_args().threads
+threads = []
+
 
 def req(tid):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -18,7 +20,6 @@ def req(tid):
         response = s.recv(1024)
         print(tid)
 
-threads = []
 
 start = time.time()
 for i in range(number_of_requests):
@@ -32,4 +33,4 @@ for thread in threads:
 end = time.time()
 
 print("Finished!")
-print(f"\n{number_of_requests} requests took {end - start} seconds")
+print(f"\n{number_of_requests} requests took {(end - start)*1000:.0f} ms")
