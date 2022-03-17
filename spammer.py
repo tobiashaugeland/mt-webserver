@@ -8,7 +8,7 @@ HOST = "127.0.0.1"
 request = "GET /index.html"
 parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--requests", type=int, default=100)
-parser.add_argument("-p", "--ports", type=int, default=8000)
+parser.add_argument("-p", "--port", type=int, default=8000)
 
 PORT = parser.parse_args().ports
 number_of_requests = parser.parse_args().requests

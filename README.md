@@ -46,7 +46,7 @@ If you run the spammer.py script it will spam the server with default 100 reques
 You can also specify your own amount of requests to spam with:
 
 ```bash
-python3 spammer.py -t number_of_requests
+python3 spammer.py -r number_of_requests -p port
 ```
 
 ### Exploit and safeguard
