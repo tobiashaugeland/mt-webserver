@@ -43,6 +43,12 @@ curl --http0.9 -g 6 "[::1]:8000/index.html"
 
 If you run the spammer.py script it will spam the server with 1000 requests.
 
+You can also specify your own amount of requests to spam with:
+
+```bash
+python3 spammer.py -t number_of_requests
+```
+
 ### Exploit and safeguard
 
 You can run the relative_path_exploit.py and see that it currently does not
