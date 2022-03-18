@@ -36,7 +36,7 @@ curl --http0.9 "127.0.0.1:8000/index.html"
 To test with ipv6, you can use the following command:
 
 ```bash
-curl --http0.9 -g 6 "[::1]:8000/index.html"
+curl --http0.9 -g -6 "[::1]:8000/index.html"
 ```
 
 ### Automatic testing
