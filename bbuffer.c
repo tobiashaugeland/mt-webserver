@@ -3,6 +3,7 @@
 #include "sem.h"
 #include <stdio.h>
 #include <pthread.h>
+#include <errno.h>
 
 struct BNDBUF
 {
@@ -18,14 +19,34 @@ struct BNDBUF
 
 BNDBUF *bb_init(unsigned int size)
 {
+    errno = 0;
     BNDBUF *bbuffer = malloc(sizeof(*bbuffer) + size * sizeof(int));
+    if (errno != 0)
+    {
+        perror("malloc");
+        return NULL; // Should the program maybe exit here?
+    }
+
     bbuffer->insert = 0;
     bbuffer->remove = 0;
     bbuffer->full = sem_init(0);
     bbuffer->empty = sem_init(size);
-    pthread_mutex_init(&bbuffer->read_mutex, NULL);
-    pthread_mutex_init(&bbuffer->write_mutex, NULL);
     bbuffer->size = size;
+
+    pthread_mutex_init(&bbuffer->read_mutex, NULL);
+    if (errno != 0)
+    {
+        perror("pthread_mutex_init");
+        return NULL;
+    }
+
+    pthread_mutex_init(&bbuffer->write_mutex, NULL);
+    if (errno != 0)
+    {
+        perror("pthread_mutex_init");
+        return NULL;
+    }
+
     return bbuffer;
 }
 
