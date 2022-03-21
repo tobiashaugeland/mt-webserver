@@ -1,6 +1,7 @@
 #include "sem.h"
 #include <stdlib.h>
 #include <pthread.h>
+#include <errno.h>
 
 struct SEM
 {
@@ -11,10 +12,24 @@ struct SEM
 
 SEM *sem_init(int init_val)
 {
+    errno = 0;
     SEM *sem = malloc(sizeof(SEM));
     sem->count = init_val;
     pthread_mutex_init(&sem->mutex, NULL);
+    if (errno != 0)
+    {
+        perror("pthread_mutex_init");
+        free(sem);
+        return NULL;
+    }
     pthread_cond_init(&sem->cond, NULL);
+    if (errno != 0)
+    {
+        perror("pthread_cond_init");
+        free(sem);
+        return NULL;
+    }
+
     return sem;
 }
 

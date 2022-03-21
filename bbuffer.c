@@ -30,7 +30,21 @@ BNDBUF *bb_init(unsigned int size)
     bbuffer->insert = 0;
     bbuffer->remove = 0;
     bbuffer->full = sem_init(0);
+    if (bbuffer->full == NULL)
+    {
+        perror("sem_init");
+        free(bbuffer);
+        return NULL;
+    }
     bbuffer->empty = sem_init(size);
+    if (bbuffer->empty == NULL)
+    {
+        perror("sem_init");
+        sem_del(bbuffer->full);
+        free(bbuffer);
+        return NULL;
+    }
+
     bbuffer->size = size;
 
     pthread_mutex_init(&bbuffer->read_mutex, NULL);
