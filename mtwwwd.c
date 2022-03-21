@@ -23,7 +23,7 @@ char wwwpath[256] = DEFAULT_ROOT_PATH;
  *
  * @param path The path to check.
  * @return 1 if the path is a directory in the wwwpath, 0 otherwise.
-*/
+ */
 int good_request(char path[])
 {
     if (strstr(path, "..") != NULL)
@@ -42,7 +42,6 @@ int good_request(char path[])
     return 1;
 }
 
-
 /**
  * @brief Checks if the given path is a file, not a directory.
  *
@@ -55,7 +54,6 @@ int is_regular_file(char path[])
     stat(path, &path_stat);
     return S_ISREG(path_stat.st_mode);
 }
-
 
 /**
  * @brief consumer thread handler
@@ -77,7 +75,7 @@ void *handle_request(void *bb)
         strcat(full_path, req_path);
 
         FILE *fp;
-        if ((access(full_path, F_OK) == 0) && good_request(full_path)  && is_regular_file(full_path))
+        if ((access(full_path, F_OK) == 0) && good_request(full_path) && is_regular_file(full_path))
         {
             fp = fopen(full_path, "r");
             fseek(fp, 0, SEEK_END);
@@ -99,7 +97,6 @@ void *handle_request(void *bb)
     }
 }
 
-
 /***************************************************
  *                      MAIN                       *
  **************************************************/
@@ -114,7 +111,6 @@ int main(int argc, char const *argv[])
     struct sockaddr_in6 address;
     int addrlen = sizeof(address);
 
-
     // Argument parsing, if 4 arguments are not given it will use defaults
     if (argc == 5)
     {
@@ -126,7 +122,7 @@ int main(int argc, char const *argv[])
     else
     {
         printf("Correct arguments were not given, using defaults\n"
-            "Correct usage is: mtwwwd <www-path> <port> <threads> <bufferslots>\n");
+               "Correct usage is: mtwwwd <www-path> <port> <threads> <bufferslots>\n");
     }
     printf("Path: %s\nPort: %d\nThread count: %d\nBuffer slots: %d\n", wwwpath, port, thread_count, buffer_size);
 
@@ -157,7 +153,7 @@ int main(int argc, char const *argv[])
 
     BNDBUF *bb = bb_init(buffer_size);
 
-    if(bb == NULL)
+    if (bb == NULL)
     {
         perror("Failed to initialize buffer");
         exit(1);
