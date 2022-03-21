@@ -37,6 +37,7 @@ BNDBUF *bb_init(unsigned int size)
     if (errno != 0)
     {
         perror("pthread_mutex_init");
+        free(bbuffer);
         return NULL;
     }
 
@@ -44,6 +45,7 @@ BNDBUF *bb_init(unsigned int size)
     if (errno != 0)
     {
         perror("pthread_mutex_init");
+        free(bbuffer);
         return NULL;
     }
 

@@ -157,6 +157,12 @@ int main(int argc, char const *argv[])
 
     BNDBUF *bb = bb_init(buffer_size);
 
+    if(bb == NULL)
+    {
+        perror("Failed to initialize buffer");
+        exit(1);
+    }
+
     pthread_t threads[thread_count];
     for (int i = 0; i < thread_count; i++)
     {
