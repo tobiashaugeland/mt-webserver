@@ -29,6 +29,8 @@ BNDBUF *bb_init(unsigned int size)
 
     bbuffer->insert = 0;
     bbuffer->remove = 0;
+    bbuffer->size = size;
+
     bbuffer->full = sem_init(0);
     if (bbuffer->full == NULL)
     {
@@ -36,6 +38,7 @@ BNDBUF *bb_init(unsigned int size)
         free(bbuffer);
         return NULL;
     }
+
     bbuffer->empty = sem_init(size);
     if (bbuffer->empty == NULL)
     {
@@ -44,8 +47,6 @@ BNDBUF *bb_init(unsigned int size)
         free(bbuffer);
         return NULL;
     }
-
-    bbuffer->size = size;
 
     pthread_mutex_init(&bbuffer->read_mutex, NULL);
     if (errno != 0)
