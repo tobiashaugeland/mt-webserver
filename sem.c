@@ -41,6 +41,6 @@ void V(SEM *sem)
 {
     pthread_mutex_lock(&sem->mutex);
     (sem->count)++;
-    pthread_cond_broadcast(&sem->cond);
+    pthread_cond_signal(&sem->cond);
     pthread_mutex_unlock(&sem->mutex);
 }
