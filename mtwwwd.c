@@ -136,17 +136,20 @@ int main(int argc, char const *argv[])
     if ((socket_fd = socket(AF_INET6, SOCK_STREAM, 0)) < 0)
     {
         perror("Failed to create socket");
+        exit(1);
     }
 
     // Set options to force socket to bind, even if address or port is already in use
     if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
     {
         perror("Failed to set socket options");
+        exit(1);
     }
 
     if (bind(socket_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
         perror("Failed to bind socket");
+        exit(1);
     }
 
     listen(socket_fd, 1);
