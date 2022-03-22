@@ -52,6 +52,8 @@ BNDBUF *bb_init(unsigned int size)
     if (errno != 0)
     {
         perror("pthread_mutex_init");
+        sem_del(bbuffer->full);
+        sem_del(bbuffer->empty);
         free(bbuffer);
         return NULL;
     }
@@ -60,6 +62,8 @@ BNDBUF *bb_init(unsigned int size)
     if (errno != 0)
     {
         perror("pthread_mutex_init");
+        sem_del(bbuffer->full);
+        sem_del(bbuffer->empty);
         free(bbuffer);
         return NULL;
     }
