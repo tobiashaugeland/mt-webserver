@@ -152,7 +152,11 @@ int main(int argc, char const *argv[])
         exit(1);
     }
 
-    listen(socket_fd, 1);
+    if (listen(socket_fd, 1) < 0)
+    {
+        perror("Failed to listen");
+        exit(1);
+    }
 
     BNDBUF *bb = bb_init(buffer_size);
 
@@ -165,7 +169,11 @@ int main(int argc, char const *argv[])
     pthread_t threads[thread_count];
     for (int i = 0; i < thread_count; i++)
     {
-        pthread_create(&threads[i], NULL, &handle_request, bb);
+        if (pthread_create(&threads[i], NULL, &handle_request, bb) != 0)
+        {
+            perror("Failed to create thread");
+            exit(1);
+        }
     }
 
     printf("Ready to accept connections...\n");
@@ -173,6 +181,10 @@ int main(int argc, char const *argv[])
     {
         new_socket_fd = accept(socket_fd, (struct sockaddr *)&address,
                                (socklen_t *)&addrlen);
+        if (new_socket_fd < 0){
+            perror("Failed to accept incoming connection");
+            exit(1);
+        }
         bb_add(bb, new_socket_fd);
     }
     return 0;
