@@ -24,7 +24,7 @@ BNDBUF *bb_init(unsigned int size)
     if (errno != 0)
     {
         perror("malloc");
-        return NULL; // Should the program maybe exit here?
+        return NULL;
     }
 
     bbuffer->insert = 0;
