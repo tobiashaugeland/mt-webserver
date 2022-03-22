@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <errno.h>
+#include <stdio.h>
 
 struct SEM
 {
