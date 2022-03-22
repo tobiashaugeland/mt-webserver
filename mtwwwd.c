@@ -183,7 +183,7 @@ int main(int argc, char const *argv[])
                                (socklen_t *)&addrlen);
         if (new_socket_fd < 0){
             perror("Failed to accept incoming connection");
-            exit(1);
+            continue;
         }
         bb_add(bb, new_socket_fd);
     }
